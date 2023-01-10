@@ -1,0 +1,61 @@
+* m4top
+
+This is a top level artifact that serves as a bundling / 
+production site for the underlying m4 application and supporting
+libraries.
+
+We migrated all ui functionality to this project, existing
+in the marathon.ui namespace now, which serves as the 
+"front-end" logic for the app.  The legacy computational
+backend still exists as a git dependency, and marathon.core
+retains its legacy services.  All ui dialogues and functions
+are moved to marathon.ui, and vars from marathon.core are
+imported as well for convenience and compatibility.
+
+Callers may leverage marathon.ui as a top-level namespace
+where they may have been in marathon.core before.
+
+* Usage
+
+Since we are following a tagged release model with dependencies
+coming from git repos via lein-git-down, we need to keep
+our versions consistent.  For sake of familiarity and 
+compatibility with legacy clojars idioms, we will still
+follow the major.minor.rev-SNAPSHOT format.
+
+When we create a new version bump, we just need to tag it
+so that it can be picked up as a transitive dependency
+easily (in lieu of using the commit hash).
+
+So: 
+
+#+BEGIN_SRC shell
+git commit -am "some great message"
+git tag 4.2.5-SNAPSHOT
+git push origin 4.2.5-SNAPSHOT
+#+END_SRC
+
+From there we update any other related git coordinates
+if necessary to the new version and they should resolve.
+
+The general artifact build produces a capsule uberjar
+as before.  You can invoke with lein via:
+
+#+BEGIN_SRC shell
+lein with-profile uberjar capsule
+#+END_SRC
+
+and you should get a versioned capsule in /target/capsule.
+
+* License
+
+This program and the accompanying materials are made available under the
+terms of the Eclipse Public License 2.0 which is available at
+http://www.eclipse.org/legal/epl-2.0.
+
+This Source Code may also be made available under the following Secondary
+Licenses when the conditions for such availability set forth in the Eclipse
+Public License, v. 2.0 are satisfied: GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or (at your
+option) any later version, with the GNU Classpath Exception which is available
+at https://www.gnu.org/software/classpath/license.html.
