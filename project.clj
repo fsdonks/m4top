@@ -13,11 +13,14 @@
                  [joinr/nightclub "0.0.4-SNAPSHOT"
                   :exclusions [commons-codec commons-io]]
                  [eigenhombre/splasher "0.0.2"] ;;splash screen lib
+                 ;;taa
+                 [taa "0.0.4-SNAPSHOT"]
                  ]
   :plugins [[reifyhealth/lein-git-down "0.4.1"]]
   :middleware [lein-git-down.plugin/inject-properties]
   :repositories [["public-github" {:url "git://github.com"}]]
-  :git-down {marathon {:coordinates fsdonks/m4}}
+  :git-down {marathon {:coordinates fsdonks/m4}
+             taa      {:coordinates fsdonks/taa}}
   :profiles {:dev {:source-paths [;;"../spork/src" "../nightclub/src"
                                   ;; "../proc/src"
                                   ;;"../marathon-schemas/src"
@@ -32,6 +35,7 @@
                            :jvm-opts ^:replace ["-Xmx1000m" "-XX:NewSize=200m" "-server"]
                            :plugins [[lein-capsule "0.2.1"]]
                            }}
+  :repl-options {:timeout 120000}
   ;;; Capsule plugin configuration section, optional
   :capsule {:application {:name    ~capsule-name
                           :version ~version}
