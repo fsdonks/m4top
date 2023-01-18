@@ -14,7 +14,7 @@
                   :exclusions [commons-codec commons-io]]
                  [eigenhombre/splasher "0.0.2"] ;;splash screen lib
                  ;;taa
-                 [taa "0.0.4-SNAPSHOT"]
+                 [taa "0.0.5-SNAPSHOT"]
                  ]
   :plugins [[reifyhealth/lein-git-down "0.4.1"]]
   :middleware [lein-git-down.plugin/inject-properties]
