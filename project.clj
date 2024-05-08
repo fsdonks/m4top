@@ -20,7 +20,8 @@
   :middleware [lein-git-down.plugin/inject-properties]
   :repositories [["public-github" {:url "git://github.com"}]]
   :git-down {marathon {:coordinates fsdonks/m4}
-             taa      {:coordinates fsdonks/taa}}
+             taa      {:coordinates fsdonks/taa}
+             demand_builder  {:coordinates  fsdonks/demand_builder}}
   :profiles {:dev {:source-paths [;;"../spork/src" "../nightclub/src"
                                   ;;"../proc/src"
                                   ;;"../marathon-schemas/src"
