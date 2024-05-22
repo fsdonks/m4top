@@ -1,8 +1,8 @@
-(def version "4.2.20")
+(def version "4.2.21")
 (def capsule-name "m4top")
 (def capsule-jar (str  capsule-name "-" version ".jar"))
 
-(defproject m4top "4.2.20-SNAPSHOT"
+(defproject m4top "4.2.21-SNAPSHOT"
   :description "Top level artifact for M4 app."
   :url "http://example.com/FIXME"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
@@ -14,7 +14,7 @@
                   :exclusions [commons-codec commons-io]]
                  [eigenhombre/splasher "0.0.2"] ;;splash screen lib
                  ;;taa
-                 [taa "0.0.21-SNAPSHOT"]
+                 [taa "0.0.22-SNAPSHOT"]
                  ]
   :plugins [[reifyhealth/lein-git-down "0.4.1"]]
   :middleware [lein-git-down.plugin/inject-properties]
