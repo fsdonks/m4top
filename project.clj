@@ -14,7 +14,7 @@
                   :exclusions [commons-codec commons-io]]
                  [eigenhombre/splasher "0.0.2"] ;;splash screen lib
                  ;;taa
-                 [taa "0.0.22-SNAPSHOT"]
+                 [taa "adf96e4c82b1abd2f90f17a24160547f90251592" #_"0.0.22-SNAPSHOT"]
                  ]
   :plugins [[reifyhealth/lein-git-down "0.4.1"]]
   :middleware [lein-git-down.plugin/inject-properties]
@@ -31,7 +31,7 @@
                        :jvm-opts ^:replace ["-Xmx1000m" "-XX:NewSize=200m" "-server"]
                        :plugins [[lein-capsule "0.2.1"]]
                        }
-             :uberjar-all {:aot [marathon.main marathon.core]
+             :uberjar-all {:aot [marathon.main marathon.core marathon.analysis.random]
                            :main  marathon.main
                            :jvm-opts ^:replace ["-Xmx1000m" "-XX:NewSize=200m" "-server"]
                            :plugins [[lein-capsule "0.2.1"]]
