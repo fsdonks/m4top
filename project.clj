@@ -8,13 +8,13 @@
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
             :url "https://www.eclipse.org/legal/epl-2.0/"}
   :dependencies [[org.clojure/clojure "1.11.1"]
-                 [marathon  "4.2.18-SNAPSHOT"]
+                 [marathon  "4.2.19-SNAPSHOT"]
                  ;;external libs
                  [joinr/nightclub "0.0.4-SNAPSHOT"
                   :exclusions [commons-codec commons-io]]
                  [eigenhombre/splasher "0.0.2"] ;;splash screen lib
                  ;;taa
-                 [taa "603452c" #_"0.0.22-SNAPSHOT"]
+                 [taa "6fd182336b1599dcd86e0ff32314d52fca6a6f0f" #_"0.0.22-SNAPSHOT"]
                  ]
   :plugins [[reifyhealth/lein-git-down "0.4.1"]]
   :middleware [lein-git-down.plugin/inject-properties]
