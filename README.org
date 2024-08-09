@@ -15,7 +15,7 @@ imported as well for convenience and compatibility.
 Callers may leverage marathon.ui as a top-level namespace
 where they may have been in marathon.core before.
 
-* Usage
+* Building
 
 Since we are following a tagged release model with dependencies
 coming from git repos via lein-git-down, we need to keep
@@ -46,6 +46,176 @@ lein with-profile uberjar capsule
 #+END_SRC
 
 and you should get a versioned capsule in /target/capsule.
+
+* Usage
+
+As with legacy applications, m4top can be invoked as an "app" by double clicking
+on the jar file, assuming the system has an installation of java 1.8 or greater.
+Most users will interface this way through the GUI and built-in clojure environment.
+
+** CLI Args
+Alternately, we can provide command line invocations with 1 or 0 arguments.
+
+0 arguments will invoke as per normal:
+
+We currently recognize two single-arg options:
+** repl
+Initiates a clojure repl from the command line, with the packaged jars already setup on the classpath.
+#+BEGIN_SRC bash
+$ java -jar m4top-4.2.21.jar repl
+clojure.core=>
+#+END_SRC
+
+** peer
+*** (Peer Mode for Distributed Computing)
+Instantiates a clojure repl, requiring the m4peer.core namespace and switching to it.
+This will, in turn, kick off the automatic clustering facilities as described in [[https://github.com/joinr/hazeldemo][hazeldemo]],
+and the current process will attempt to connect to discoverable nodes on the cluster.
+
+#+BEGIN_SRC bash
+$ java -jar m4top-4.2.21.jar peer
+
+Aug 09, 2024 10:35:51 AM com.hazelcast.internal.diagnostics.Diagnostics
+INFO: hz.client_1 [dev] [4.0.2] Diagnostics disabled. To enable add -Dhazelcast.diagnostics.enabled=true to the JVM arguments.
+Aug 09, 2024 10:35:51 AM com.hazelcast.client.impl.spi.ClientClusterService
+INFO: hz.client_1 [dev] [4.0.2]
+
+Members [1] {
+        Member [192.168.1.4]:5701 - 6ec95b81-650a-4e78-bda1-87da97436a80
+}
+
+Aug 09, 2024 10:35:51 AM com.hazelcast.client.impl.statistics.ClientStatisticsService
+INFO: Client statistics is enabled with period 5 seconds.
+Warning: resetting Nippy thaw for custom type with id: :spork/entity
+Warning: resetting Nippy thaw for custom type with id: :clojure/atom
+m4peer.core=>
+#+END_SRC
+
+"Peers" must be launched from the same baseline m4top jar file in order to work together
+to execute distributed M4 runs.  The reasons rest in clojure's non-deterministic class
+emission model (particularly for anonymous functions), which can be mostly avoided by
+using a shared basis for all known classes.  We do this in m4top by using some limited
+AOT compilation of specific namespaces that have known pipelines for distributed computation.
+
+In this way, each peer can resolve both locally defined anonymous functions (which may otherwise
+map to a different implemntation class at runtime), as well as obvious globally defined functions
+e.g. via ~defn~.
+
+Each peer serves as a worker available to the ad-hoc clustering provided by the underlying
+hazelcast service, with a library of all known functions and vars from m4top bundled with it.
+
+Consequently, when using distributed computation functions, like hazeldemo.client/fmap, we can
+fmap known marathon functions and tap into a distributed variant for horizontal scaling.  Hazelcast
+should take care of work distribution for us behind the scenes.
+
+**** Configuration
+
+We expect to primarily use M4 peers on a LAN where the "easy path" of multicast
+is disabled, but where we have access to network storage for registering machines
+and where we can connect via TCP/IP.  Inheriting from hazeldemo, an M4 peer will
+look for a configuration file:
+
+With no configuration specified, hazelcast will automatically use multicast to try to find members.
+Depending on network configuration this can be enough and is definitely the "easy button".  You just
+have peers established and they'll find eachother.
+
+(As outlined in the [[https://github.com/joinr/hazeldemo][hazeldemo]] readme):
+
+For ease of use, we currently define clojure maps (conventionally .edn files)
+that correspond to configuration objects.
+
+The maps conform to
+
+#+BEGIN_SRC clojure
+    {;;name of the cluster to join
+     :id "dev"
+     ;;join method
+     :join #{:multicast :tcp :aws}
+     ;;known members, either a map of :file/path that points
+     ;;to a shared folder all peers can access to discover
+     ;;and register dynamically, or a vector of ip addresses
+     ;;specifying known (fixed) peers.
+     :members [:or {:file/path path-to-registry-directory}
+                   [ip-address-string1 ... ip-address-stringn]]
+     ;;optional required member
+     :required required-ip-string
+     ;;if [:members :file/path], then determines if new cluster memebers write their
+     ;;information to the registry. true by default.
+     :register-on-join #{true false}}
+#+END_SRC
+
+The library will look for configuration maps in this order:
+
+- look for  ./hazelcast.edn (e.g. config colocated in the launch directory),
+- look for ~/.hazelcast/hazelcast.edn (global config).
+- If none is found, check env var HAZELCAST, since we may set peers on AWS to indicate
+  an IAM aws connection.
+
+Without knowing the machine IP's beforehand, there is no way to dynamically
+register new machines with the cluster to incrementally scale up. In this case
+either a members file or a directory may be supplied. The file would contain the
+newline-delimited list of known members and allow external updating of the
+registry by whatever means. A directory enables automatic registration semantics
+that follow.
+
+For configuration, if :members is a :file/path, we want to get the current
+members when the peer joins. It's possible there is no members file yet. So our
+semantics are to touch the file to ensure it exists, and then read it.
+
+If a directory is supplied, the directory is inferred to be a registry of all
+the active ips (one file, where the name is the ip, per member). This should
+allow concurrent access to the registry (just look up the current children and
+return the file names). This allows concurrent write/creation of different
+atomic entries (files). Clients can delete their file as well (to withdraw). Our
+connection service infers that a directory means you should scan the file names
+to get addresses of potential cluster members.
+
+For visibility/debugging, we also push the computer name as the file content,
+although we typically will only really care about the ips (the file name).
+
+For example, we may have a configuration in ~/.hazelcast/hazelcast.edn
+
+ #+BEGIN_SRC clojure
+{:id "dev"
+ :join :tcp
+ :members {:file/path "v:/registry/"}
+ :register-on-join true}
+ #+END_SRC
+
+ Assuming that v:/registry points to a shared folder that other peers can see, it will
+ store the ip address and computer names of peers as the spin up, and provide a
+ starting point for known cluster members to join.
+
+ Upon connecting 2 peers, we may end up with these files in v:/registry:
+
+#+BEGIN_SRC bash
+ 192.168.1.3 BILBO
+ 192.168.1.8 SAM
+#+END_SRC
+
+
+*** Quick Setup
+The simplest setup involves 2 things: a current m4 jar file (built from this repository),
+and a hazelcast.edn file.
+
+One would "typically" create a user-level .hazelcast file for common configuration (scripts exist
+to copy this setup on new machines).
+
+If we know that the shared network drive ~v~ has a folder ~registry~ that all peers
+can access for cluster discovery, then when we setup a peer,
+
+- we can create ~/.hazelcast/hazelcast.edn on the peer machine and populate it as per the example:
+ #+BEGIN_SRC clojure
+{:id "dev"
+ :join :tcp
+ :members {:file/path "v:/registry/"}
+ :register-on-join true}
+ #+END_SRC
+- we copy our shared baseline of m4 anywhere on the peer
+- start the peer by running the following command line (if we are in the same directory as m4)...
+#+BEGIN_SRC bash
+$ java -jar m4top-4.2.21.jar peer
+#+END_SRC
 
 * License
 

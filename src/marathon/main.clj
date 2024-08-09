@@ -19,7 +19,13 @@
   (require  'splasher.core)
   (require  'clojure.java.io)
   (if (seq args)
-    (clojure.main/repl)
+    (case (first args)
+      "repl" (clojure.main/repl)
+      "peer" (binding [*ns* *ns*]
+               (require 'm4peer.core)
+               (clojure.main/repl :init (fn [] (in-ns 'm4peer.core))))
+      (println [:CLI-ARG (first args)
+                :not-recognized :expected :one-of ["repl" "peer"]]))
     (binding [*ns* *ns*]
       ;;rather than :require it in the ns-decl, we load it
       ;;at runtime.

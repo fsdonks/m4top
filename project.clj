@@ -1,8 +1,8 @@
-(def version "4.2.21")
+(def version "4.2.22")
 (def capsule-name "m4top")
 (def capsule-jar (str  capsule-name "-" version ".jar"))
 
-(defproject m4top "4.2.21-SNAPSHOT"
+(defproject m4top "4.2.22-SNAPSHOT"
   :description "Top level artifact for M4 app."
   :url "http://example.com/FIXME"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
@@ -14,7 +14,7 @@
                   :exclusions [commons-codec commons-io]]
                  [eigenhombre/splasher "0.0.2"] ;;splash screen lib
                  ;;taa
-                 [taa "1d5ea6b3ab10ff6e9c38a51bd872f0cdb7915837" #_"0.0.22-SNAPSHOT"]
+                 [taa "0.0.23-SNAPSHOT"]
                  ]
   :plugins [[reifyhealth/lein-git-down "0.4.1"]]
   :middleware [lein-git-down.plugin/inject-properties]
@@ -26,16 +26,11 @@
                                   ;;"../proc/src"
                                   ;;"../marathon-schemas/src"
                                   ]}
-             :uberjar {:aot  [marathon.main]
-                       :main  marathon.main
-                       :jvm-opts ^:replace ["-Xmx1000m" "-XX:NewSize=200m" "-server"]
-                       :plugins [[lein-capsule "0.2.1"]]
-                       }
-             :uberjar-all {:aot [marathon.main marathon.core marathon.analysis.random]
-                           :main  marathon.main
-                           :jvm-opts ^:replace ["-Xmx1000m" "-XX:NewSize=200m" "-server"]
-                           :plugins [[lein-capsule "0.2.1"]]
-                           }}
+             :uberjar  {:aot [marathon.main marathon.core marathon.analysis.random]
+                        :main  marathon.main
+                        :jvm-opts ^:replace ["-Xmx1000m" "-XX:NewSize=200m" "-server"]
+                        :plugins [[lein-capsule "0.2.1"]]
+                        }}
   :repl-options {:timeout 120000}
   ;;; Capsule plugin configuration section, optional
   :capsule {:application {:name    ~capsule-name
