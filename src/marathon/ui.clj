@@ -104,7 +104,6 @@
    "Stochastic-Demand"     "Generate stochastic demand files from a casebook."
    "Compute-Peaks"         "Extract the peak concurrent demands from a folder."
    "Debug-Run"             "Runs the capacity analysis with output directed toward a file"
-   "Demand-Builder"        "Open the processing gui for the Demand Builder application."
 ;;   "Custom"             "Run a custom script on the project"
 ;;   "Eval"               "Evaluate an expression in the context"
    ))
@@ -247,13 +246,6 @@
   (request-path [wbpath "Please select the location of a valid MARATHON project file."]
      (run/examine-project wbpath)))
 
-;;todo:
-;;map out demand-builder subtasks...
-(defn demand-builder-dialogue
-  []
-  (builder/gui :exit? false))
-
-
 ;;sparkcharts...
 ;;currently mimicing the api from da.
 (comment
@@ -288,8 +280,7 @@
                          (gui/input-box
                           :prompt "Select a Clojure script"))
     :high-water          (high-water-dialogue)
-    :high-water-batch-from (high-water-batch-from-dialogue)
-    :demand-builder        (demand-builder-dialogue)})
+    :high-water-batch-from (high-water-batch-from-dialogue)})
 
 ;;commands that have a file-path supplied.
 ;;TODO: look into shifting from map-dispatch
