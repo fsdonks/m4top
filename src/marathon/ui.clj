@@ -251,7 +251,9 @@
 ;;map out demand-builder subtasks...
 (defn demand-builder-dialogue
   []
-  (builder/gui :exit? false))
+  #_
+  (builder/gui :exit? false)
+  (println "Demand Builder GUI is currently deprecated and being reworked."))
 
 
 ;;sparkcharts...
