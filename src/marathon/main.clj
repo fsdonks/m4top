@@ -23,6 +23,7 @@
       "repl" (clojure.main/repl)
       "peer" (binding [*ns* *ns*]
                (require 'm4peer.core)
+               ((resolve 'hazeldemo.core/get-cluster))
                (clojure.main/repl :init (fn [] (in-ns 'm4peer.core))))
       (println [:CLI-ARG (first args)
                 :not-recognized :expected :one-of ["repl" "peer"]]))
