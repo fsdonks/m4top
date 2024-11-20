@@ -15,12 +15,14 @@
                  [eigenhombre/splasher "0.0.2"] ;;splash screen lib
                  ;;taa
                  [taa "1df93aaaebb75639a30b599ea3d5d3bbf04242ca" #_"0.0.23-SNAPSHOT"]
+                 [babashka/process "0.5.22"]
                  ]
   :plugins [[reifyhealth/lein-git-down "0.4.1"]]
   :middleware [lein-git-down.plugin/inject-properties]
   :repositories [["public-github" {:url "git://github.com"}]]
   :git-down {marathon {:coordinates fsdonks/m4}
              taa      {:coordinates fsdonks/taa}
+             m4peer   {:coordinates fsdonks/m4}
              demand_builder  {:coordinates  fsdonks/demand_builder}
              proc     {:coordinates  fsdonks/proc}
              marathon-schemas {:coordinates fsdonks/marathon-schemas}
@@ -34,12 +36,5 @@
              :uberjar  {:aot [marathon.main marathon.core marathon.analysis.random chazel.core hazeldemo.utils]
                         :main  marathon.main
                         :jvm-opts ^:replace ["-Xmx1000m" "-XX:NewSize=200m" "-server"]
-                        :plugins [[lein-capsule "0.2.1"]]
                         }}
-  :repl-options {:timeout 120000}
-  ;;; Capsule plugin configuration section, optional
-  :capsule {:application {:name    ~capsule-name
-                          :version ~version}
-            :types {:fat {:name   ~capsule-jar}}
-            :execution {:runtime {:jvm-args ["-Xmx4g"]}
-                        :boot    {:main-class  "marathon.main"}}})
+  :repl-options {:timeout 120000})
