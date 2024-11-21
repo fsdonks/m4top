@@ -14,7 +14,7 @@
                   :exclusions [commons-codec commons-io]]
                  [eigenhombre/splasher "0.0.2"] ;;splash screen lib
                  ;;taa
-                 [taa "1df93aaaebb75639a30b599ea3d5d3bbf04242ca" #_"0.0.23-SNAPSHOT"]
+                 [taa "d6250fb3598c3ee621cf81825f7543295f7661d4" #_"0.0.23-SNAPSHOT"]
                  [babashka/process "0.5.22"]
                  ]
   :plugins [[reifyhealth/lein-git-down "0.4.1"]]
@@ -33,7 +33,7 @@
                                   "../taa/src"
                                   "../taa/test/"
                                   ]}
-             :uberjar  {:aot [marathon.main marathon.core marathon.analysis.random chazel.core hazeldemo.utils]
+             :uberjar  {:aot [marathon.main marathon.core marathon.analysis.random #_#_chazel.core hazeldemo.utils]
                         :main  marathon.main
                         :jvm-opts ^:replace ["-Xmx1000m" "-XX:NewSize=200m" "-server"]
                         }}
