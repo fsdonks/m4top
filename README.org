@@ -42,10 +42,10 @@ The general artifact build produces a capsule uberjar
 as before.  You can invoke with lein via:
 
 #+BEGIN_SRC shell
-lein with-profile uberjar capsule
+lein uberjar
 #+END_SRC
 
-and you should get a versioned capsule in /target/capsule.
+and you should get a versioned capsule in /target/m4top-version-standalone.jar
 
 * Usage
 
