@@ -14,7 +14,7 @@
                   :exclusions [commons-codec commons-io]]
                  [eigenhombre/splasher "0.0.2"] ;;splash screen lib
                  ;;taa
-                 [taa "d6250fb3598c3ee621cf81825f7543295f7661d4" #_"0.0.23-SNAPSHOT"]
+                 [taa "d2da67d585406e5d5697a5bc7b7adbdb950c25d09" #_"0.0.23-SNAPSHOT"]
                  [babashka/process "0.5.22"]
                  ]
   :plugins [[reifyhealth/lein-git-down "0.4.1"]]
