@@ -1,4 +1,4 @@
-(def version "4.2.22")
+(def version "4.2.23")
 (def capsule-name "m4top")
 (def capsule-jar (str  capsule-name "-" version ".jar"))
 
