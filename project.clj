@@ -28,7 +28,7 @@
              proc     {:coordinates  fsdonks/proc}
              marathon-schemas {:coordinates fsdonks/marathon-schemas}
              hazeldemo {:coordinates joinr/hazeldemo}
-             taapost {:coordinets fsdonks/taapost}}
+             taapost {:coordinates fsdonks/taapost}}
   :profiles {:dev {:source-paths [;;"../spork/src" "../nightclub/src"
                                   ;;"../proc/src"
                                   ;;"../marathon-schemas/src"
