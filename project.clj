@@ -14,8 +14,9 @@
                   :exclusions [commons-codec commons-io]]
                  [eigenhombre/splasher "0.0.2"] ;;splash screen lib
                  ;;taa
-                 [taa "d2da67d585406e5d5697a5bc7b7adbdb950c25d09" #_"0.0.23-SNAPSHOT"]
+                 [taa "ffa21e8c1c73d294321e59ecee1fe278c5caa1b5" #_"0.0.23-SNAPSHOT"]
                  [babashka/process "0.5.22"]
+                 [taapost "0.1.0-SNAPSHOT"]
                  ]
   :plugins [[reifyhealth/lein-git-down "0.4.1"]]
   :middleware [lein-git-down.plugin/inject-properties]
@@ -26,7 +27,8 @@
              demand_builder  {:coordinates  fsdonks/demand_builder}
              proc     {:coordinates  fsdonks/proc}
              marathon-schemas {:coordinates fsdonks/marathon-schemas}
-             hazeldemo {:coordinates joinr/hazeldemo}}
+             hazeldemo {:coordinates joinr/hazeldemo}
+             taapost {:coordinets fsdonks/taapost}}
   :profiles {:dev {:source-paths [;;"../spork/src" "../nightclub/src"
                                   ;;"../proc/src"
                                   ;;"../marathon-schemas/src"
