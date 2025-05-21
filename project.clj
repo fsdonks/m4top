@@ -50,7 +50,8 @@
                                   "../taa/test/"
                                   ]
                    :aot [chazel.core hazeldemo.utils]}
-             :uberjar  {:aot [marathon.main marathon.core marathon.analysis.random chazel.core hazeldemo.utils]
+             :uberjar  {:aot [marathon.main marathon.core marathon.analysis.random chazel.core hazeldemo.utils
+                              taapost.shave taapost.nlist]
                         :main  marathon.main
                         :jvm-opts ^:replace ["-Xmx1000m" "-XX:NewSize=200m" "-server"]
                         }}
