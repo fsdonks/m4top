@@ -101,12 +101,23 @@
                              (s/join " "))]
     (str "java "  jvm-args)))
 
+(def gc-re #"-XX:\+Use.+GC")
+
+(defn gc-specified? [args]
+  (->> args (some (fn [arg] (re-find gc-re arg)))))
+
+(defn default-gc [args]
+  (if-not (gc-specified? args)
+    (conj args "-XX:+UseParallelGC")
+    args))
+
 (defn -main [& args]
   (if (= (first args) "entry") ;;launched.
     (apply entry (rest args))
     ;;build subprocess
     (let [jarpath         (System/getProperty "java.class.path")
           [jvm-args user] (scrape-jvm-args args)
+          jvm-args        (default-gc jvm-args)
           cmd             (s/join " " [(java-cmd jvm-args jarpath) "entry" (s/join " " user)])]
       (prn {:launching-subprocess cmd
             :jvm-args jvm-args
