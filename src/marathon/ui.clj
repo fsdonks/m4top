@@ -396,7 +396,7 @@
                                         (obs/subscribe  menu-handler))
                  ]
              (night/attach! :window-args
-                            {:title   (str "M4Top" m4top-version "/ MARATHON " +version+)
+                            {:title   (str "M4Top " m4top-version " / MARATHON " +version+)
                              :menubar main-menu
                              :on-close (if exit? :exit :dispose)
                              }
