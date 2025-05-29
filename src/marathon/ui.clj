@@ -48,6 +48,7 @@
   post-processed-run-with-samples
   requirements-analysis])
 
+(def m4top-version "4.2.23")
 
 ;;retained gui utils..
 (def  path-history   (atom [(System/getProperty "user.dir")]))
@@ -395,7 +396,7 @@
                                         (obs/subscribe  menu-handler))
                  ]
              (night/attach! :window-args
-                            {:title   (str "MARATHON " +version+)
+                            {:title   (str "M4Top" m4top-version "/ MARATHON " +version+)
                              :menubar main-menu
                              :on-close (if exit? :exit :dispose)
                              }
