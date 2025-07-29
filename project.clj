@@ -23,7 +23,7 @@
                   :exclusions [commons-codec]]
                  [com.taoensso/nippy "2.15.3" :exclusions [com.taoensso/encore com.taoensso/truss]]
                  [babashka/process "0.5.22"]
-                 [taapost "0.1.1-SNAPSHOT"
+                 [taapost "1f2ae57d018a9cba3453fd7e4e2af02927bf8753" #_"0.1.2-SNAPSHOT"
                   :exclusions [jfree/jfreechart jfree/jfreechart com.taoensso/nippy
                                commons-codec]]
                  ;;these were tacked on due to taapost, we can look at cleaning this up
