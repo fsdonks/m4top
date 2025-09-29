@@ -48,7 +48,7 @@
   post-processed-run-with-samples
   requirements-analysis])
 
-(def m4top-version "4.2.23")
+(def m4top-version "4.2.24")
 
 ;;retained gui utils..
 (def  path-history   (atom [(System/getProperty "user.dir")]))
