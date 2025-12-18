@@ -115,6 +115,9 @@
     (conj args "-XX:+UseParallelGC")
     args))
 
+(defn r-str [x]
+  (with-out-str (pr x)))
+
 (defn -main [& args]
   (cond (= (first args) "clojure.main")
         (do (println "<caller specified clojure.main from cli, bypassing launcher>")
@@ -126,7 +129,9 @@
         (let [jarpath         (System/getProperty "java.class.path")
               [jvm-args user] (scrape-jvm-args args)
               jvm-args        (default-gc jvm-args)
-              cmd             (s/join " " [(java-cmd jvm-args jarpath) "entry" (s/join " " user)])]
+              cmd             (s/join " " [(java-cmd jvm-args jarpath)
+                                           "entry"
+                                           (s/join " " (map r-str user))])]
           (prn {:launching-subprocess cmd
                 :jvm-args jvm-args
                 :user-args user
