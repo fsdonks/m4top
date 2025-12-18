@@ -11,6 +11,12 @@
 ;;requires some arcane features to get things
 ;;working, since we're creating repls on other
 ;;threads.
+
+;;we want to enable main arg1 arg2 etc.
+;;so we explicitly recognize cmds, e.g.
+;;java -jar m4.jar main -e "(println :hello!)"
+
+(def cmds #{"clojure.main" "main" "peer" "repl"})
 (defn entry [& args]
   ;;clojure.set isn't imported by default, causing errors when
   ;;aot-compiling in some places.
@@ -22,13 +28,14 @@
   (require  'clojure.java.io)
   (if (seq args)
     (case (first args)
+      "main" (apply clojure.main/main (rest args))
       "repl" (clojure.main/repl)
       "peer" (binding [*ns* *ns*]
                (require 'm4peer.core)
                ((resolve 'hazeldemo.core/get-cluster))
                (clojure.main/repl :init (fn [] (in-ns 'm4peer.core))))
       (println [:CLI-ARG (first args)
-                :not-recognized :expected :one-of ["repl" "peer"]]))
+                :not-recognized :expected :one-of ["repl" "peer" "main"]]))
     (binding [*ns* *ns*]
       ;;rather than :require it in the ns-decl, we load it
       ;;at runtime.
@@ -72,22 +79,19 @@
 
 (def binary #{"-cp" "-jar"})
 
+(defn classify-args [xs]
+  (let [argtype (atom :jvm)]
+    (->> xs
+         (mapv (fn [x]
+                (when (cmds x)
+                  (reset! argtype :user))
+                 {:arg x :type @argtype})))))
+
 (defn scrape-jvm-args [xs]
-  (loop [args xs
-         jvm  []
-         user []]
-    (if-let [nxt (first args)]
-      (cond (binary nxt)
-            (let [l nxt
-                  r (fnext args)]
-              (recur (-> args rest rest)
-                     (conj jvm l r)
-                     user))
-            (= (nth nxt 0) \-)
-            (recur (rest args) (conj jvm nxt) user)
-            :else
-            (recur (rest args) jvm (conj user nxt)))
-      [jvm user])))
+  (let [[jvm user] (->> xs
+                        classify-args
+                        (split-with #(= (:type %) :jvm)))]
+    [(mapv :arg jvm) (mapv :arg user)]))
 
 (defn ensure-cp [jarpath jvm-args]
   (let [xs (set (map s/trim jvm-args))]
@@ -112,15 +116,19 @@
     args))
 
 (defn -main [& args]
-  (if (= (first args) "entry") ;;launched.
-    (apply entry (rest args))
-    ;;build subprocess
-    (let [jarpath         (System/getProperty "java.class.path")
-          [jvm-args user] (scrape-jvm-args args)
-          jvm-args        (default-gc jvm-args)
-          cmd             (s/join " " [(java-cmd jvm-args jarpath) "entry" (s/join " " user)])]
-      (prn {:launching-subprocess cmd
-            :jvm-args jvm-args
-            :user-args user
-            :args args})
-      (p/shell cmd))))
+  (cond (= (first args) "clojure.main")
+        (do (println "<caller specified clojure.main from cli, bypassing launcher>")
+            (apply clojure.main/main (rest args)))
+        (= (first args) "entry") ;;launched.
+        (apply entry (rest args))
+        :else
+        ;;build subprocess
+        (let [jarpath         (System/getProperty "java.class.path")
+              [jvm-args user] (scrape-jvm-args args)
+              jvm-args        (default-gc jvm-args)
+              cmd             (s/join " " [(java-cmd jvm-args jarpath) "entry" (s/join " " user)])]
+          (prn {:launching-subprocess cmd
+                :jvm-args jvm-args
+                :user-args user
+                :args args})
+          (p/shell cmd))))
