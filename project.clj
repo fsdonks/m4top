@@ -19,11 +19,11 @@
                                #_org.clojure/data.codec]]
                  [eigenhombre/splasher "0.0.2"] ;;splash screen lib
                  ;;taa
-                 [taa "20f16dafb96ef69f47ff891d9532d09a0e09a689" #_"0.0.23-SNAPSHOT"
+                 [taa "0.0.26-SNAPSHOT"
                   :exclusions [commons-codec]]
                  [com.taoensso/nippy "2.15.3" :exclusions [com.taoensso/encore com.taoensso/truss]]
                  [babashka/process "0.5.22"]
-                 [taapost "1f2ae57d018a9cba3453fd7e4e2af02927bf8753" #_"0.1.2-SNAPSHOT"
+                 [taapost "0.1.4-SNAPSHOT"
                   :exclusions [jfree/jfreechart jfree/jfreechart com.taoensso/nippy
                                commons-codec]]
                  ;;these were tacked on due to taapost, we can look at cleaning this up
